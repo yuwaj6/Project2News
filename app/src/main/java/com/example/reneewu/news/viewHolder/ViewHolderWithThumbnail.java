@@ -16,6 +16,7 @@ public class ViewHolderWithThumbnail extends RecyclerView.ViewHolder {
     // for any view that will be set as you render a row
     public TextView tvHeadline;
     public ImageView ivThumbnail;
+    public TextView tvNewsDesk;
 
     // We also create a constructor that accepts the entire item row
     // and does the view lookups to find each subview
@@ -26,5 +27,6 @@ public class ViewHolderWithThumbnail extends RecyclerView.ViewHolder {
 
         tvHeadline = (TextView) itemView.findViewById(R.id.tvHeadline);
         ivThumbnail = (ImageView) itemView.findViewById(R.id.ivThumbnail);
+        tvNewsDesk = (TextView) itemView.findViewById(R.id.tvTag);
     }
 }

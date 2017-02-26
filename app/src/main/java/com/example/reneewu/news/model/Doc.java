@@ -10,6 +10,7 @@ public class Doc {
     private List<Multimedia> multimedia = null;
     private Headline headline;
     private String web_url;
+    private String news_desk;
 
     public String getWebUrl() {
         return web_url;
@@ -36,6 +37,14 @@ public class Doc {
     }
 
 
+
+    public String getNewsDesk() {
+        return news_desk;
+    }
+
+    public void setNewsDesk(String newsDesk) {
+        this.news_desk = newsDesk;
+    }
     /*
 
     private String snippet;
@@ -48,7 +57,7 @@ public class Doc {
     private List<Keyword> keywords = null;
     private String pubDate;
     private String documentType;
-    private String newsDesk;
+
     private String sectionName;
     private String subsectionName;
     private Byline byline;

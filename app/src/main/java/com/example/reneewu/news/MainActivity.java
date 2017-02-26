@@ -1,9 +1,12 @@
 package com.example.reneewu.news;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
@@ -18,13 +21,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import com.example.reneewu.news.adapter.DocAdapter;
+import com.example.reneewu.news.helper.EndlessRecyclerViewScrollListener;
+import com.example.reneewu.news.helper.ItemClickSupport;
 import com.example.reneewu.news.model.Doc;
 import com.example.reneewu.news.model.Filter;
 import com.example.reneewu.news.model.NYTimes;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,39 +60,39 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.Fi
         rvResult = (RecyclerView) findViewById(R.id.rvResults);
 
         ItemClickSupport.addTo(rvResult).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // do it
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_name);
-                        String url = docs.get(position).getWebUrl();
+                (recyclerView, position, v) -> {
+                    // do it
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_name);
+                    String url = docs.get(position).getWebUrl();
 
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.setType("text/plain");
-                        intent.putExtra(Intent.EXTRA_TEXT, url);
-                        int requestCode = 100;
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+                    int requestCode = 100;
 
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                                requestCode,
-                                intent,
-                                PendingIntent.FLAG_UPDATE_CURRENT);
-                        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                            requestCode,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
-                        // Map the bitmap, text, and pending intent to this icon
-                        // Set tint to be true so it matches the toolbar color
-                        builder.setActionButton(bitmap, "Share Link", pendingIntent, true);
-                        // set toolbar color and/or setting custom actions before invoking build()
-                        // Once ready, call CustomTabsIntent.Builder.build() to create a CustomTabsIntent
+                    // Map the bitmap, text, and pending intent to this icon
+                    // Set tint to be true so it matches the toolbar color
+                    builder.setActionButton(bitmap, "Share Link", pendingIntent, true);
+                    // set toolbar color and/or setting custom actions before invoking build()
+                    // Once ready, call CustomTabsIntent.Builder.build() to create a CustomTabsIntent
 
-                        CustomTabsIntent customTabsIntent = builder.build();
+                    CustomTabsIntent customTabsIntent = builder.build();
 
-                        // and launch the desired Url with CustomTabsIntent.launchUrl()
-                        customTabsIntent.launchUrl(getApplicationContext(), Uri.parse(url));
-                    }
+                    // and launch the desired Url with CustomTabsIntent.launchUrl()
+                    customTabsIntent.launchUrl(getApplicationContext(), Uri.parse(url));
                 }
         );
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if(!isNetworkAvailable()&&!isOnline())
+            Toast.makeText(getBaseContext(), "Cannot connect to internet. Please check your network permission or contact your network supplier", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -243,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.Fi
 
             @Override
             public void onFailure(Call<NYTimes> call, Throwable t) {
-
+                Toast.makeText(getBaseContext(), "Failed to search articles. Please try again later.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -265,6 +271,26 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.Fi
 
     public void onFinishFilterDialog(Filter queryFilter) {
         filter = queryFilter;
+
+        // reset page as 0
         search(0);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    private boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        return false;
     }
 }

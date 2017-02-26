@@ -83,40 +83,36 @@ public class FilterFragment extends DialogFragment {
                     Integer.parseInt(filter.query_beginDate.substring(6,8)));
 
 
-        btnSave.setOnClickListener(new View.OnClickListener()
-        {
-            // Perform button logic
-            @Override public void onClick(View v){
-                FilterFragmentListner listener = (FilterFragmentListner) getActivity();
+        btnSave.setOnClickListener(v -> {
+            FilterFragmentListner listener = (FilterFragmentListner) getActivity();
 
-                //begin date
-                int month = mDatePicker.getMonth()+1;
-                String s_month;
-                if (month < 10){
-                    s_month = "0" + month;
-                }
-                else{
-                    s_month = Integer.toString(month);
-                }
-
-                String date =  Integer.toString(mDatePicker.getYear()) +
-                        s_month +
-                        Integer.toString(mDatePicker.getDayOfMonth());
-                Log.v("Date", date);
-                filter.query_beginDate = date;
-
-                // sort order
-                String value = spinner.getSelectedItem().toString();
-                filter.sortOrder = value;
-
-                filter.isCheckArtsChecked = checkArts.isChecked();
-                filter.isCheckFashionChecked= checkFashion.isChecked();
-                filter.isCheckSportsChecked = checkSports.isChecked();
-
-                //listener.onFinishFilterDialog( value, date , fq);
-                listener.onFinishFilterDialog( filter );
-                dismiss();
+            //begin date
+            int month = mDatePicker.getMonth()+1;
+            String s_month;
+            if (month < 10){
+                s_month = "0" + month;
             }
+            else{
+                s_month = Integer.toString(month);
+            }
+
+            String date =  Integer.toString(mDatePicker.getYear()) +
+                    s_month +
+                    Integer.toString(mDatePicker.getDayOfMonth());
+            Log.v("Date", date);
+            filter.query_beginDate = date;
+
+            // sort order
+            String value = spinner.getSelectedItem().toString();
+            filter.sortOrder = value;
+
+            filter.isCheckArtsChecked = checkArts.isChecked();
+            filter.isCheckFashionChecked= checkFashion.isChecked();
+            filter.isCheckSportsChecked = checkSports.isChecked();
+
+            //listener.onFinishFilterDialog( value, date , fq);
+            listener.onFinishFilterDialog( filter );
+            dismiss();
         });
     }
 

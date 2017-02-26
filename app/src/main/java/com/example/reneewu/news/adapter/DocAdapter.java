@@ -2,7 +2,6 @@ package com.example.reneewu.news.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,16 +72,15 @@ public class DocAdapter extends
             ViewHolderWithThumbnail vt = (ViewHolderWithThumbnail) viewHolder;
             // Get the data model based on position
             Doc item = mDocs.get(position);
-            Log.v("positoin", Integer.toString(position));
 
             // Set item views based on your views and data model
             TextView textView = vt.tvHeadline;
             textView.setText(item.getHeadline().getMain());
-            Log.v("headline", item.getHeadline().getMain());
+            TextView tag = vt.tvNewsDesk;
+            tag.setText(item.getNewsDesk());
             Multimedia thumbnail = getThumbnailMedia(item.getMultimedia());
             String url = "http://www.nytimes.com/" + thumbnail.getUrl();
 
-            Log.v("thumbnail url", url);
             Glide.with(mContext)
                     .load(url)
                     .into(vt.ivThumbnail);
@@ -90,12 +88,13 @@ public class DocAdapter extends
             ViewHolderHeadlineOnly vh = (ViewHolderHeadlineOnly) viewHolder;
             // Get the data model based on position
             Doc item = mDocs.get(position);
-            Log.v("positoin", Integer.toString(position));
 
             // Set item views based on your views and data model
             TextView textView = vh.tvHeadline;
             textView.setText(item.getHeadline().getMain());
-            Log.v("headline", item.getHeadline().getMain());
+
+            TextView tag = vh.tvNewsDesk;
+            tag.setText(item.getNewsDesk());
         }
     }
 

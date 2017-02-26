@@ -1,7 +1,9 @@
-package com.example.reneewu.news;
+package com.example.reneewu.news.helper;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.example.reneewu.news.R;
 
 /*
   Source: http://www.littlerobots.nl/blog/Handle-Android-RecyclerView-Clicks/

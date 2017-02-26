@@ -12,10 +12,12 @@ import com.example.reneewu.news.R;
 
 public class ViewHolderHeadlineOnly extends RecyclerView.ViewHolder {
     public TextView tvHeadline;
+    public TextView tvNewsDesk;
 
     public ViewHolderHeadlineOnly(View itemView) {
         super(itemView);
 
         tvHeadline = (TextView) itemView.findViewById(R.id.tvHeadline);
+        tvNewsDesk = (TextView) itemView.findViewById(R.id.tvTag);
     }
 }
